@@ -1,13 +1,14 @@
 package org.sid;
 
+import java.math.BigInteger;
+import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!, Main thread-" + Thread.currentThread().getName());
-
-        for (int i = 0; i < 20; i++) {
-            new Later().start();
+        for(int i=0;i<10000;i+=8){
+            new Thread(new FindIfPrimesInRange(i, i+8)).start();
         }
-        System.out.println("Hello world!, Main thread Over");
     }
 }
 
@@ -24,5 +25,29 @@ class Later extends Thread {
             }
         }
         System.out.println("Finishing Thread Execution -- " + Thread.currentThread().getName() + " :: Time -- " + (System.currentTimeMillis() - time));
+    }
+}
+
+class FindIfPrimesInRange implements Runnable {
+
+    private final int start;
+    private final int end;
+
+    public FindIfPrimesInRange(int start, int end) {
+        if(start >= end) throw new IllegalArgumentException("Start cannot be same or more than End value");
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    public void run() {
+        IntPredicate predicate = FindIfPrimesInRange::isPrime;
+        boolean returnVal = IntStream.rangeClosed(start, end).anyMatch(predicate);
+        System.out.println("Any Primes in the range - " + start + " and " + end + "? --> " + returnVal);
+    }
+
+    public static boolean isPrime(int number) {
+        BigInteger bigInt = BigInteger.valueOf(number);
+        return bigInt.isProbablePrime(100);
     }
 }
