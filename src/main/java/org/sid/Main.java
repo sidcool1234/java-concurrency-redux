@@ -1,19 +1,28 @@
 package org.sid;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-        // Press Opt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        System.out.println("Hello world!, Main thread-" + Thread.currentThread().getName());
 
-        // Press Ctrl+R or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
-
-            // Press Ctrl+D to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Cmd+F8.
-            System.out.println("i = " + i);
+        for (int i = 0; i < 20; i++) {
+            new Later().start();
         }
+        System.out.println("Hello world!, Main thread Over");
+    }
+}
+
+class Later extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Starting Thread Execution -- " + Thread.currentThread().getName());
+        long time = System.currentTimeMillis();
+        for (int i = 0; i < 100; i++) {
+            try {
+                Thread.sleep((int) (Math.random() * 100));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        System.out.println("Finishing Thread Execution -- " + Thread.currentThread().getName() + " :: Time -- " + (System.currentTimeMillis() - time));
     }
 }
