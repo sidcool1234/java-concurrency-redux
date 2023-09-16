@@ -1,7 +1,6 @@
 package org.sid;
 
 import java.math.BigInteger;
-import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
 public class Main {
@@ -41,12 +40,11 @@ class FindIfPrimesInRange implements Runnable {
 
     @Override
     public void run() {
-        IntPredicate predicate = FindIfPrimesInRange::isPrime;
-        boolean returnVal = IntStream.rangeClosed(start, end).anyMatch(predicate);
-        System.out.println("Any Primes in the range - " + start + " and " + end + "? --> " + returnVal);
+        var ret = IntStream.rangeClosed(start, end).filter(FindIfPrimesInRange::isPrime).boxed().toList();
+        System.out.println("Any Primes in the range - " + start + " and " + end + "? --> " + ret.size());
     }
 
-    public static boolean isPrime(int number) {
+    private static boolean isPrime(int number) {
         BigInteger bigInt = BigInteger.valueOf(number);
         return bigInt.isProbablePrime(100);
     }
